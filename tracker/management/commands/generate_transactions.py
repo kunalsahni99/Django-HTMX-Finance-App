@@ -25,10 +25,10 @@ class Command(BaseCommand):
         for category in categories:
             Category.objects.get_or_create(name=category)
 
-        user = User.objects.filter(username="q.naal").first()
+        user = User.objects.filter(username="admin").first()
         if not user:
-            user = User.objects.create_superuser(
-                username="q.naal",
+            user = User.objects.create_user(
+                username="admin",
                 password="Leomessi10@#",
                 email="kunal.sahni1999@gmail.com",
             )
