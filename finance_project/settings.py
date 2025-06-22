@@ -37,8 +37,7 @@ INSTALLED_APPS = [
     
     # project apps
     "tracker",
-    
-    
+    'django_filters',
 ]
 
 SITE_ID = 1
