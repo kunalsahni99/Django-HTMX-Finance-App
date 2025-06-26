@@ -17,7 +17,7 @@ class Command(BaseCommand):
             "Medical",
             "Housing",
             "Salary",
-            "Socail",
+            "Social",
             "Transport",
             "Vacation",
         ]
