@@ -61,7 +61,7 @@
                         <td>{{ transaction.date }}</td>
                         <td>{{ transaction.category }}</td>
                         <td>{{ transaction.type }}</td>
-                        <td>{{ transaction.amount }}</td>
+                        <td>{{ transaction.amount|floatformat:2|intcomma }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
