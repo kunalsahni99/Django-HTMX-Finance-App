@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+
+from tracker.forms import TransactionForm
 from .models import Transaction
 from .filters import TransactionFilter
 
@@ -27,3 +29,8 @@ def transactions_list(request):
         return render(request, 'tracker/partials/transactions_container.html', context)
 
     return render(request, 'tracker/transactions_list.html', context)
+
+def create_transaction(request):
+    context = {'form': TransactionForm()}
+
+    return render(request, 'tracker/partials/create-transaction.html', context)
