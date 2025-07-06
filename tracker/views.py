@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 from django_htmx.http import retarget
 
 from tracker.forms import TransactionForm
@@ -51,7 +52,7 @@ def create_transaction(request):
     return render(request, 'tracker/partials/create-transaction.html', context)
 
 @login_required
-def update_transactions(request, pk):
+def update_transaction(request, pk):
     transaction = get_object_or_404(Transaction, pk=pk, user=request.user)
 
     if request.method == 'POST':
@@ -74,3 +75,13 @@ def update_transactions(request, pk):
     }
 
     return render(request, 'tracker/partials/update-transaction.html', context)
+
+@login_required
+@require_http_methods(["DELETE"])
+def delete_transaction(request, pk):
+    transaction = get_object_or_404(Transaction, pk=pk, user=request.user)
+    transaction.delete()
+
+    context = {'message': f'Transaction of {transaction.amount} on {transaction.date} was deleted successfully!'}
+
+    return render(request, 'tracker/partials/transaction-success.html', context)
