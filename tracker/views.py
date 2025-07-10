@@ -94,6 +94,8 @@ def delete_transaction(request, pk):
 
 @login_required
 def get_transactions(request):
+    import time
+    time.sleep(2)
     page = request.GET.get('page', 1)
     transaction_filter = TransactionFilter(
         request.GET,
@@ -106,3 +108,9 @@ def get_transactions(request):
     }
 
     return render(request, 'tracker/partials/transactions_container.html#transaction_list', context)
+
+@login_required
+def transaction_charts(request):
+    context = {}
+
+    return render(request, 'tracker/charts.html', context)

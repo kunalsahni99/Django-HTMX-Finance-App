@@ -64,7 +64,8 @@
                                 <tr hx-get="{% url 'get-transactions' %}?page={{ transactions.next_page_number }}"
                                     hx-trigger="revealed"
                                     hx-swap="afterend"
-                                    hx-include="#filterform">
+                                    hx-include="#filterform"
+                                    hx-indicator='#spinner'>
                             {% else %}
                                 <tr>
                             {% endif %}
@@ -144,3 +145,5 @@
         </form>
     </div>
 </div>
+
+<span class="loading loading-dots loading-lg htmx-indicator" id="spinner"></span>
