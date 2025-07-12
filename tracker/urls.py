@@ -12,7 +12,8 @@ urlpatterns = [
     path('transactions/<int:pk>/delete/', views.delete_transaction, name='delete-transaction'),
     path('get-transactions/', views.get_transactions, name='get-transactions'),
     path('transactions-charts/', views.transaction_charts, name='transactions-charts'),
-    path('transaction/export', views.export, name='export')
+    path('transaction/export', views.export, name='export'),
+    path('transactions/import', views.import_transactions, name='import')
 ]
 
 if settings.DEBUG:

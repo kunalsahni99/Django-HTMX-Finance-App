@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django_htmx.http import retarget
 from django.conf import settings
+from tablib import Dataset
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 
@@ -37,7 +38,7 @@ def transactions_list(request):
         'net_income': total_income - total_expenses
     }
     if request.htmx:
-        return render(request, 'tracker/partials/transactions_container.html', context)
+        return render(request, 'tracker/partials/transactions-container.html', context)
 
     return render(request, 'tracker/transactions_list.html', context)
 
@@ -110,7 +111,7 @@ def get_transactions(request):
         'transactions': paginator.page(page)
     }
 
-    return render(request, 'tracker/partials/transactions_container.html#transaction_list', context)
+    return render(request, 'tracker/partials/transactions-container.html#transaction_list', context)
 
 @login_required
 def transaction_charts(request):
@@ -154,3 +155,29 @@ def export(request):
     response['Content-Disposition'] = 'attachment; filename="transactions.csv"'
 
     return response
+
+
+@login_required
+def import_transactions(request):
+    if request.method == 'POST':
+        file = request.FILES.get('file')
+        resource = TransactionResource()
+        dataset = Dataset()
+        context = {}
+        
+        dataset.load(file.read().decode(), format='csv')
+        result = resource.import_data(dataset, user=request.user, dry_run=True)
+
+        for row in result:
+            for error in row.errors:
+                print(error)
+
+        if not result.has_errors():
+            result = resource.import_data(dataset, user=request.user, dry_run=False)
+            context= {'message': f'{len(dataset)} transactions were uploaded successfully!'}
+        else:
+            context= {'message': 'Sorry, an error occured.'}
+        
+        return render(request, 'tracker/partials/transaction-success.html', context)
+
+    return render(request, 'tracker/partials/import-transaction.html')
