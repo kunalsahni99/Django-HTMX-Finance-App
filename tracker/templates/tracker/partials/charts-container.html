@@ -1,0 +1,45 @@
+{% load widget_tweaks %}
+
+<div class="flex flex-col-reverse md:grid md:grid-cols-4 md:gap-4" id="charts-container">
+    <div class="col-span-3">
+        {{ income_expense_barchart|safe }}
+    </div>
+
+    <div class="col-span-1">
+        <form hx-get="{% url 'transactions-charts' %}"
+        hx-target="#charts-container" 
+        hx-swap="outerHTML"
+        id="filterform">
+            <div class="mb-2 form-control">
+                <label for="{{ filter.form.transaction_type.id_for_label }}" class="label text-white">
+                    {{ filter.form.transaction_type.label }}
+                </label>
+                {% render_field filter.form.transaction_type class="select bg-white-10 text-gray-900" %}
+            </div>
+
+            <div class="mb-2 form-control">
+                <label for="{{ filter.form.start_date.id_for_label }}" class="label text-white">
+                    {{ filter.form.start_date.label }}
+                </label>
+                {% render_field filter.form.start_date class="input bg-white-10 text-gray-900" %}
+            </div>
+
+            <div class="mb-2 form-control">
+                <label for="{{ filter.form.end_date.id_for_label }}" class="label text-white">
+                    {{ filter.form.end_date.label }}
+                </label>
+                {% render_field filter.form.end_date class="input bg-white-10 text-gray-900" %}
+            </div>
+
+            <div class="mb-4 form-control">
+                {% render_field filter.form.category class="text-white border-gray-300 rounded focus:ring-black" %}
+            </div>
+
+            <button class="btn btn-success">
+                Filter
+            </button>
+        </form>
+    </div>
+</div>
+
+<span class="loading loading-dots loading-lg htmx-indicator" id="spinner"></span>

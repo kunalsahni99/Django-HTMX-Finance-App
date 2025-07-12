@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core.paginator import Paginator
 
 from tracker.forms import TransactionForm
+from tracker.charting import plot_income_expense_bar_chart
 from .models import Transaction
 from .filters import TransactionFilter
 
@@ -111,6 +112,14 @@ def get_transactions(request):
 
 @login_required
 def transaction_charts(request):
-    context = {}
+    transaction_filter = TransactionFilter(
+        request.GET,
+        queryset=Transaction.objects.filter(user=request.user).select_related('category')
+    )
+    income_expense_bar = plot_income_expense_bar_chart(transaction_filter.qs)
+    context = {
+        'filter': transaction_filter,
+        'income_expense_barchart': income_expense_bar.to_html()
+    }
 
     return render(request, 'tracker/charts.html', context)
