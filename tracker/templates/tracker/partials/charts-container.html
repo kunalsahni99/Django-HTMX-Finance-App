@@ -3,12 +3,18 @@
 <div class="flex flex-col-reverse md:grid md:grid-cols-4 md:gap-4" id="charts-container">
     <div class="col-span-3">
         {{ income_expense_barchart|safe }}
+
+        <div class="grid grid-cols-2">
+            {{ income_category_pie|safe }}
+            {{ expense_category_pie|safe }}
+        </div>
     </div>
 
     <div class="col-span-1">
         <form hx-get="{% url 'transactions-charts' %}"
         hx-target="#charts-container" 
         hx-swap="outerHTML"
+        hx-indicator="#spinner"
         id="filterform">
             <div class="mb-2 form-control">
                 <label for="{{ filter.form.transaction_type.id_for_label }}" class="label text-white">
@@ -39,7 +45,6 @@
                 Filter
             </button>
         </form>
+        <span class="loading loading-dots loading-lg htmx-indicator mt-2" id="spinner"></span>
     </div>
 </div>
-
-<span class="loading loading-dots loading-lg htmx-indicator" id="spinner"></span>
