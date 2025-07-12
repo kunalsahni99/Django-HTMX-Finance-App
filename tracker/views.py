@@ -3,11 +3,13 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django_htmx.http import retarget
 from django.conf import settings
+from django.http import HttpResponse
 from django.core.paginator import Paginator
 
 from tracker.forms import TransactionForm
 from tracker.charting import plot_income_expense_bar_chart, plot_category_pie_chart
 from .models import Transaction
+from .resources import TransactionResource
 from .filters import TransactionFilter
 
 # Create your views here.
@@ -137,3 +139,18 @@ def transaction_charts(request):
         return render(request, 'tracker/partials/charts-container.html', context)
 
     return render(request, 'tracker/charts.html', context)
+
+@login_required
+def export(request):
+    if request.htmx:
+        return HttpResponse(headers={'HX-Redirect': request.get_full_path()})
+    transaction_filter = TransactionFilter(
+        request.GET,
+        queryset=Transaction.objects.filter(user=request.user).select_related('category')
+    )
+
+    data = TransactionResource().export(transaction_filter.qs)
+    response = HttpResponse(data.csv)
+    response['Content-Disposition'] = 'attachment; filename="transactions.csv"'
+
+    return response
